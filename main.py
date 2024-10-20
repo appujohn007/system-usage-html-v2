@@ -25,7 +25,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def get_home(request: Request):
     # Fetch distinct dates from the collection
-    distinct_dates = collection.distinct("_id")  # Assuming _id is the date
+    distinct_dates = collection.distinct("date")  # Assuming _id is the date
     return templates.TemplateResponse("index.html", {"request": request, "dates": distinct_dates})
 
 
