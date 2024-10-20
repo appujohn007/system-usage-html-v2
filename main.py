@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
+import asyncio
 import os
 
 # Load environment variables
@@ -21,6 +22,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Template rendering
 templates = Jinja2Templates(directory="templates")
+
+
+@app.on_event("startup")
+async def startup_event():
+    # Ensure a fresh event loop is created for each Lambda invocation if necessary
+    if asyncio.get_event_loop().is_closed():
+        asyncio.set_event_loop(asyncio.new_event_loop())
 
 
 @app.get("/", response_class=HTMLResponse)
