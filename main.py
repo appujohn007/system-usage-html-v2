@@ -4,8 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
-import asyncio
 import os
+import asyncio
 
 # Load environment variables
 load_dotenv()
@@ -23,20 +23,21 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Template rendering
 templates = Jinja2Templates(directory="templates")
 
-
 @app.on_event("startup")
 async def startup_event():
     # Ensure a fresh event loop is created for each Lambda invocation if necessary
-    if asyncio.get_event_loop().is_closed():
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            asyncio.set_event_loop(asyncio.new_event_loop())
+    except RuntimeError:
         asyncio.set_event_loop(asyncio.new_event_loop())
-
 
 @app.get("/", response_class=HTMLResponse)
 async def get_home(request: Request):
     # Fetch distinct dates from the collection
     distinct_dates = await collection.distinct("_id")  # Assuming _id is the date
     return templates.TemplateResponse("index.html", {"request": request, "dates": distinct_dates})
-
 
 @app.get("/usage/{date}")
 async def get_usage_data(date: str):
