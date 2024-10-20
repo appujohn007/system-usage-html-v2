@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Usage Data</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>System Usage Data</h1>
+    <label for="date-select">Select Date:</label>
+    <select id="date-select">
+        <option value="">--Select a Date--</option>
+        {% for date in dates %}
+        <option value="{{ date }}">{{ date }}</option>
+        {% endfor %}
+    </select>
+
+    <h2>CPU Usage</h2>
+    <ul id="cpu-usage"></ul>
+
+    <h2>RAM Usage</h2>
+    <ul id="ram-usage"></ul>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
